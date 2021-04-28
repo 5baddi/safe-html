@@ -33,6 +33,13 @@ class SafeHTML
         return $safeValues;
     }
 
+    public function validate(string $value): bool
+    {
+        $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
+
+        return $value === 1;
+    }
+
     public function encodeEntities(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
@@ -45,20 +52,16 @@ class SafeHTML
 
     public function sanitizeHTML(string $value): string
     {
-        $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
-        if (!strlen($value) || $valid !== 1) {
+        if (!$this->validate($value)) {
             return '';
         }
+
+        $this->removeSpacing($value);
+        $this->removeNullCharacter($value);
+        $this->removeNetscapeJSEntities($value);
       
         $doc = new \DOMDocument("1.0", "UTF-8");
         libxml_use_internal_errors(false);
-
-        $this->removeNullCharacter($value);
-
-        // Remove Netscape 4 JS entities
-        $value = preg_replace('%&\\s*\\{[^}]*(\\}\\s*;?|$)%', '', $value);
-
-        $this->removeSpacing($value);
 
         $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", "UTF-8");
 
@@ -100,5 +103,10 @@ class SafeHTML
     private function removeNullCharacter(string &$value): string
     {
         return preg_replace(chr(0), '', $value);
+    }
+    
+    private function removeNetscapeJSEntities(string &$value): string
+    {
+        return preg_replace("%&\\s*\\{[^}]*(\\}\\s*;?|$)%", '', $value);
     }
 }
