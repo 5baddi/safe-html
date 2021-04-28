@@ -1,0 +1,15 @@
+{
+    "name": "baddiservices/safehtml",
+    "description": "Safe HTML package help to prevent XSS vulnerability via HTML content",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "5baddi",
+            "email": "project@baddi.info"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0"
+    }
+}
