@@ -38,7 +38,7 @@ class SafeHTML
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
     }
     
-    public function decodeEntities($value): string
+    public function decodeEntities(string $value): string
     {
         return html_entity_decode($value, ENT_QUOTES, "UTF-8");
     }
