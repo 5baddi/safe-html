@@ -37,7 +37,7 @@ class SafeHTML
     {
         $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
 
-        return $value === 1;
+        return $valid === 1;
     }
 
     public function encodeEntities(string $value): string
