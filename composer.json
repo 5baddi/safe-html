@@ -3,6 +3,7 @@
     "description": "Safe HTML package help to prevent XSS vulnerability via HTML content",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "beta",
     "authors": [
         {
             "name": "5baddi",
