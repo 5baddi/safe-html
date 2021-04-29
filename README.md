@@ -61,7 +61,7 @@ Method                                                   | Description
 -------------------------------------------------------- | --------------------------------------------------
 `validate($value)`                                       | Verify text is HTML
 `sanitize($value)`                                       | Sanitize text to prevent HTML tags
-`sanitizeArray($values)`                                       | Sanitize array of texts to prevent HTML tags
-`sanitizeHTML($value)`                                       | Sanitize HTML to prevent XSS vulnerability
-`encodeEntities($value)`                                       | Encode special characters to HTML entities
-`decodeEntities($value)`                                       | Decode HTML entities to their corresponding characters
+`sanitizeArray($values)`                                 | Sanitize array of texts to prevent HTML tags
+`sanitizeHTML($value)`                                   | Sanitize HTML to prevent XSS vulnerability
+`encodeEntities($value)`                                 | Encode special characters to HTML entities
+`decodeEntities($value)`                                 | Decode HTML entities to their corresponding characters
