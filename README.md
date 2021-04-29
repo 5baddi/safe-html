@@ -65,3 +65,11 @@ Method                                                   | Description
 `sanitizeHTML($value)`                                   | Sanitize HTML to prevent XSS vulnerability
 `encodeEntities($value)`                                 | Encode special characters to HTML entities
 `decodeEntities($value)`                                 | Decode HTML entities to their corresponding characters
+
+Contribute
+----------
+
+Contributions to the package are always welcome!
+
+* Report any bugs or issues you find.
+* Clone the code source and publish pull your request.
