@@ -11,6 +11,9 @@ namespace BADDIServices\SafeHTML;
 
 class SafeHTML
 {
+    /** @var string */
+    const DEFAULT_BLACKLIST_PATH = __DIR__ . "blacklist.json";
+
     /** @var array */
     private $notAllowedTags = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
@@ -22,6 +25,14 @@ class SafeHTML
 
     /** @var string */
     private $encoding = "UTF-8";
+    
+    /** @var string */
+    private $blackListPath = self::DEFAULT_BLACKLIST_PATH;
+
+    public function __construct()
+    {
+        $this->loadBlackList();
+    }
 
     public function getEncoding(): string
     {
@@ -138,6 +149,16 @@ class SafeHTML
         $safeHTML = substr($safeHTML, 6, -7);
 
         return $this->encodeEntities($safeHTML);
+    }
+
+    private function loadBlackList(): void
+    {
+        $blackList = json_decode(file_get_contents($this->blackListPath), true);
+        if (is_array($blackList) && sizeof($blackList) > 0) {
+            if (isset($blackList["tags"], $blackList["tags"]["not-allowed"]) && sizeof($blackList["tags"]["not-allowed"]) > 0) {
+                $this->notAllowedTags = $blackList["tags"]["not-allowed"];
+            }
+        }
     }
 
     private function getURLRegex(): string
