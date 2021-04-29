@@ -20,26 +20,6 @@ class SafeHTML
     /** @var array */
     private $notAllowedAttrs = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
-    public function sanitize(string $value): string
-    {
-        $safeValue = filter_var($value, FILTER_SANITIZE_STRING);
-        if(!$safeValue) {
-            return '';
-        }
-
-        return $safeValue;
-    }
-
-    public function sanitizeArray(array $values): array
-    {
-        $safeValues = filter_var_array($values, FILTER_SANITIZE_STRING);
-        if(!$safeValues) {
-            return [];
-        }
-
-        return $safeValues;
-    }
-
     public function validate(string $value): bool
     {
         $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
@@ -57,12 +37,53 @@ class SafeHTML
         return html_entity_decode($value, ENT_QUOTES, "UTF-8");
     }
 
+    public function sanitize(string $value): string
+    {
+        $safeValue = filter_var($value, FILTER_SANITIZE_STRING);
+        if(!$safeValue) {
+            return '';
+        }
+
+        return $safeValue;
+    }
+
+    public function sanitizeAll(array $values): array
+    {
+        $safeValues = filter_var_array($values, FILTER_SANITIZE_STRING);
+        if(!$safeValues) {
+            return [];
+        }
+
+        return $safeValues;
+    }
+
+    public function sanitizeURL(string $url): string
+    {
+        $safeURL = filter_var($url, FILTER_SANITIZE_URL);
+        if(!$safeURL) {
+            return '';
+        }
+
+        return $safeURL;
+    }
+    
+    public function sanitizeURLs(array $urls): array
+    {
+        $safeURls = filter_var_array($urls, FILTER_SANITIZE_URL);
+        if(!$safeURls) {
+            return [];
+        }
+
+        return $safeURls;
+    }
+
     public function sanitizeHTML(string $value): string
     {
         if (!$this->validate($value)) {
             return '';
         }
 
+        $this->escapeURLs($value);
         $this->removeSpacing($value);
         $this->removeNullCharacter($value);
         $this->removeNetscapeJSEntities($value);
@@ -83,6 +104,8 @@ class SafeHTML
                 foreach ($tag->attributes as $attr) {
                     if (in_array(strtolower($attr->nodeName), $this->notAllowedAttrs) || $attr->nodeType === XML_ATTRIBUTE_CDATA) {
                         $tag->removeAttribute($attr->nodeName);
+
+                        continue;
                     }
                 }
 
@@ -102,18 +125,60 @@ class SafeHTML
         return $this->encodeEntities($safeHTML);
     }
 
+    private function getURLRegex(): string
+    {
+        return "((https?|http)://)?(www\.)?" // SCHEME
+                . '([a-z0-9+!*(),;?&=$_.-]+(:[a-z0-9+!*(),;?&=$_.-]+)?@)?' // User and Pass
+                . "([a-z0-9\-\.]*)\.(([a-z]{2,4})|([0-9]{1,3}\.([0-9]{1,3})\.([0-9]{1,3})))" // Host or IP
+                . "(:[0-9]{2,5})?" // Port
+                . '(/([a-z0-9+$_%-]\.?)+)*/?' // Path
+                . '(\?[a-z+&\$_.-][a-z0-9;:@&%=+/$_.-]*)?' // GET Query
+                . "(#[a-z_.-][a-z0-9+$%_.-]*)?"; // Anchor
+    }
+
+    private function escapeURLs(string &$value): string
+    {
+        preg_match_all($this->getURLRegex(), $value, $matches);
+
+        $safeURLs = $this->sanitizeURLs($matches);
+        foreach($matches as $key => $match) {
+            if (!filter_var($safeURLs[$key], FILTER_VALIDATE_URL) || !isset($safeURLs[$key])) {
+                $replaceWith = '#';
+            }
+
+            $value = str_replace($match, $replaceWith ?? $safeURLs[$key], $value);
+        }
+
+        return $value;
+    }
+    
     private function removeSpacing(string &$value): string
     {
-        return preg_replace("(?:\s|\"|'|\+|&#x0[9A-F];|%0[9a-f])*?", '', $value);
+        $value = preg_replace("(?:\s|\"|'|\+|&#x0[9A-F];|%0[9a-f])*?", '', $value);
+        if (is_null($value) || is_array($value)) {
+            return '';
+        }
+
+        return $value;
     }
     
     private function removeNullCharacter(string &$value): string
     {
-        return preg_replace(chr(0), '', $value);
+        $value = preg_replace(chr(0), '', $value);
+        if (is_null($value) || is_array($value)) {
+            return '';
+        }
+
+        return $value;
     }
     
     private function removeNetscapeJSEntities(string &$value): string
     {
-        return preg_replace("%&\\s*\\{[^}]*(\\}\\s*;?|$)%", '', $value);
+        $value = preg_replace("%&\\s*\\{[^}]*(\\}\\s*;?|$)%", '', $value);
+        if (is_null($value) || is_array($value)) {
+            return '';
+        }
+
+        return $value;
     }
 }
