@@ -2,8 +2,9 @@
 
 [![Licence](https://img.shields.io/github/license/baddiservices/safe-html?logo=MIT)](./LICENSE)
 ![PHP Version](https://img.shields.io/packagist/php-v/baddiservices/safehtml)
-[![Issues](https://img.shields.io/github/issues/baddiservices/safe-html)](https://github.com/baddiservices/safe-html/issues)
+[![Open issues](https://img.shields.io/github/issues-raw/baddiservices/safe-html)](https://github.com/baddiservices/safe-html/issues?q=is%3Aissue+is%3Aopen)
 [![Stars](https://img.shields.io/github/stars/baddiservices/safe-html)](https://github.com/baddiservices/safe-html/stargazers)
+[![Downloads](https://img.shields.io/packagist/dm/baddiservices/safehtml)](https://packagist.org/packages/baddiservices/safehtml)
 [![Tweet](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fgithub.com%2Fbaddiservices%2Fsafe-html)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fpackagist.org%2Fpackages%2Fbaddiservices%2Fsafehtml)
 
 Safe HTML package help to prevent XSS vulnerability via HTML content
@@ -17,8 +18,8 @@ Use [Composer] to install the package:
 $ composer require baddiservices/safehtml
 ```
 
-Example
--------
+Examples
+--------
 
 Validate the input is HTML or not
 ```php
@@ -54,8 +55,7 @@ $sanitizedHTML = $safeHTML->sanitizeHTML($content);
 ```
 
 Available methods
--------
-
+-----------------
 
 Method                                                   | Description
 -------------------------------------------------------- | --------------------------------------------------
