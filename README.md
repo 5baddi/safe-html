@@ -71,9 +71,9 @@ Method                                                   | Description
 Exceptions
 -----------------
 
-Code        | Description
------------ | --------------------------------------------------
-11          | Failed to load blacklist file
+Name                                   | Code        | Description
+-------------------------------------- | ----------- | -------------------------------------------------------
+`BlackListNotLoadedException`          | 11          | Failed to load blacklist file
 
 Contribute
 ----------
