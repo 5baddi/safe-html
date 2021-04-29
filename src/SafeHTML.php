@@ -9,6 +9,10 @@
 
 namespace BADDIServices\SafeHTML;
 
+use BADDIServices\SafeHTML\Exceptions\BlackListNotLoadedException;
+use DOMDocument;
+use Throwable;
+
 class SafeHTML
 {
     /** @var string */
@@ -114,7 +118,7 @@ class SafeHTML
         $this->removeNullCharacter($value);
         $this->removeNetscapeJSEntities($value);
       
-        $doc = new \DOMDocument("1.0", $this->encoding);
+        $doc = new DOMDocument("1.0", $this->encoding);
         libxml_use_internal_errors(false);
 
         $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
@@ -153,11 +157,19 @@ class SafeHTML
 
     private function loadBlackList(): void
     {
-        $blackList = json_decode(file_get_contents($this->blackListPath), true);
-        if (is_array($blackList) && sizeof($blackList) > 0) {
-            if (isset($blackList["tags"], $blackList["tags"]["not-allowed"]) && sizeof($blackList["tags"]["not-allowed"]) > 0) {
-                $this->notAllowedTags = $blackList["tags"]["not-allowed"];
+        try {
+            $blackList = json_decode(file_get_contents($this->blackListPath), true);
+            if (is_array($blackList) && sizeof($blackList) > 0) {
+                if (isset($blackList["tags"], $blackList["tags"]["not-allowed"]) && sizeof($blackList["tags"]["not-allowed"]) > 0) {
+                    $this->notAllowedTags = $blackList["tags"]["not-allowed"];
+                }
+                
+                if (isset($blackList["attributes"], $blackList["attributes"]["not-allowed"]) && sizeof($blackList["attributes"]["not-allowed"]) > 0) {
+                    $this->notAllowedAttrs = $blackList["attributes"]["not-allowed"];
+                }
             }
+        } catch(Throwable $exception) {
+            throw new BlackListNotLoadedException($exception);
         }
     }
 
