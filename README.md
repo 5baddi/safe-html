@@ -71,9 +71,9 @@ Method                                                   | Description
 Exceptions
 -----------------
 
-Name                                   | Code        | Description
--------------------------------------- | ----------- | -------------------------------------------------------
-`BlackListNotLoadedException`          | 11          | Failed to load blacklist file
+Name                                                                                     | Code        | Description
+---------------------------------------------------------------------------------------- | ----------- | ----------------------------------------
+[BlackListNotLoadedException](./src/Exceptions/BlackListNotLoadedException.php)          | 11          | Failed to load blacklist file
 
 Contribute
 ----------
