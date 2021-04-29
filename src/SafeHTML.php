@@ -74,7 +74,7 @@ class SafeHTML
 
         if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS)) {
             foreach ($doc->getElementsByTagName('*') as $tag) {
-                if (in_array(strtolower($tag->tagName), $this->notAllowedTags) || $tag->nodeType === XML_CDATA_SECTION_NODE) {
+                if (in_array(strtolower($tag->tagName), $this->notAllowedTags) || $tag->nodeType === XML_CDATA_SECTION_NODE || $tag->nodeType === XML_COMMENT_NODE) {
                     $tag->parentNode->removeChild($tag);
 
                     continue;
