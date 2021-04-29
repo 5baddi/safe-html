@@ -68,6 +68,13 @@ Method                                                   | Description
 `encodeEntities($value)`                                 | Encode special characters to HTML entities
 `decodeEntities($value)`                                 | Decode HTML entities to their corresponding characters
 
+Exceptions
+-----------------
+
+Code        | Description
+----------- | --------------------------------------------------
+11          | Failed to load blacklist file
+
 Contribute
 ----------
 
