@@ -32,7 +32,7 @@ use BADDIServices\SafeHTML\SafeHTML;
 class DemoController extends Controller
 {
     /** @var SafeHTML **/
-    private $SafeHTML;
+    private $safeHTML;
 
     public function __construct(SafeHTML $safeHTML)
     {
