@@ -20,6 +20,21 @@ class SafeHTML
     /** @var array */
     private $notAllowedAttrs = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
+    /** @var string */
+    private $encoding = "UTF-8";
+
+    public function getEncoding(): string
+    {
+        return $this->encoding;
+    }
+
+    public function setEncoding(string $encoding): self
+    {
+        $this->encoding = $encoding;
+
+        return $this;
+    }
+
     public function validate(string $value): bool
     {
         $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
@@ -29,12 +44,12 @@ class SafeHTML
 
     public function encodeEntities(string $value): string
     {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, "UTF-8");
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, $this->encoding);
     }
     
     public function decodeEntities(string $value): string
     {
-        return html_entity_decode($value, ENT_QUOTES, "UTF-8");
+        return html_entity_decode($value, ENT_QUOTES, $this->encoding);
     }
 
     public function sanitize(string $value): string
@@ -88,10 +103,10 @@ class SafeHTML
         $this->removeNullCharacter($value);
         $this->removeNetscapeJSEntities($value);
       
-        $doc = new \DOMDocument("1.0", "UTF-8");
+        $doc = new \DOMDocument("1.0", $this->encoding);
         libxml_use_internal_errors(false);
 
-        $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", "UTF-8");
+        $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
 
         if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS)) {
             foreach ($doc->getElementsByTagName('*') as $tag) {
