@@ -12,5 +12,18 @@
     ],
     "require": {
         "php": "^7.4|^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "BADDIServices\\SafeHTML\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BADDIServices\\SafeHTML\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
     }
 }
