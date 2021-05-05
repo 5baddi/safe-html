@@ -62,6 +62,15 @@ class SafeHTML
         return $this;
     }
 
+    public function setBlackListPath(string $blackListPath): void
+    {
+        if (is_file($blackListPath)) {
+            $this->blackListPath = $blackListPath;
+
+            $this->loadBlackList();
+        }
+    }
+
     public function validate(string $value): bool
     {
         $valid = preg_match('%^(<\s*)(/\s*)?([a-zA-Z0-9]+\s*)([^>]*)(>?)$%', $value, $matches);
