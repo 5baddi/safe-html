@@ -1,6 +1,7 @@
 {
     "tags": {
-        "not-allowed": []
+        "not-allowed": [],
+        "not-allowed-empty": []
     },
     "attributes": {
         "not-allowed": []

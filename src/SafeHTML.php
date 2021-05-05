@@ -19,16 +19,28 @@ class SafeHTML
     const DEFAULT_BLACKLIST_PATH = __DIR__ . "blacklist.json";
 
     /** @var array */
-    private $notAllowedTags = ["script", "meta", "frameset", "applet", "object", "frameset"];
+    const NOT_ALLOWED_TAGS = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
     /** @var array */
-    private $notAllowedEmptyTags = ["script", "meta", "frameset", "applet", "object", "frameset"];
+    const NOT_ALLOWED_EMPTY_TAGS = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
     /** @var array */
-    private $notAllowedAttrs = ["script", "meta", "frameset", "applet", "object", "frameset"];
+    const NOT_ALLOWED_ATTRS = ["script", "meta", "frameset", "applet", "object", "frameset"];
 
     /** @var string */
-    private $encoding = "UTF-8";
+    const UTF8_ENCODAGE = "UTF-8";
+
+    /** @var array */
+    private $notAllowedTags;
+
+    /** @var array */
+    private $notAllowedEmptyTags;
+
+    /** @var array */
+    private $notAllowedAttrs;
+
+    /** @var string */
+    private $encoding = self::UTF8_ENCODAGE;
     
     /** @var string */
     private $blackListPath = self::DEFAULT_BLACKLIST_PATH;
@@ -162,10 +174,20 @@ class SafeHTML
             if (is_array($blackList) && sizeof($blackList) > 0) {
                 if (isset($blackList["tags"], $blackList["tags"]["not-allowed"]) && sizeof($blackList["tags"]["not-allowed"]) > 0) {
                     $this->notAllowedTags = $blackList["tags"]["not-allowed"];
+                } else {
+                    $this->notAllowedTags = self::NOT_ALLOWED_TAGS;
+                }
+                
+                if (isset($blackList["tags"], $blackList["tags"]["not-allowed-empty"]) && sizeof($blackList["tags"]["not-allowed-empty"]) > 0) {
+                    $this->notAllowedEmptyTags = $blackList["tags"]["not-allowed-empty"];
+                } else {
+                    $this->notAllowedEmptyTags = self::NOT_ALLOWED_EMPTY_TAGS;
                 }
                 
                 if (isset($blackList["attributes"], $blackList["attributes"]["not-allowed"]) && sizeof($blackList["attributes"]["not-allowed"]) > 0) {
                     $this->notAllowedAttrs = $blackList["attributes"]["not-allowed"];
+                } else {
+                    $this->notAllowedAttrs = self::NOT_ALLOWED_ATTRS;
                 }
             }
         } catch(Throwable $exception) {
