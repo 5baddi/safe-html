@@ -67,6 +67,24 @@ Method                                                   | Description
 `sanitizeHTML($value)`                                   | Sanitize HTML to prevent XSS vulnerability
 `encodeEntities($value)`                                 | Encode special characters to HTML entities
 `decodeEntities($value)`                                 | Decode HTML entities to their corresponding characters
+`setBlackListPath($blackListPath)`                                 | Set custom path of blacklist json file
+`getEncoding()`                                 | Get characters encoding
+`setEncoding($encodage)`                                 | Set characters encoding
+
+Blacklist file example
+-----------------------
+You can check the default used [blacklist](./src/blacklist.json)
+```json
+{
+    "tags": {
+        "not-allowed": [],
+        "not-allowed-empty": []
+    },
+    "attributes": {
+        "not-allowed": []
+    }
+}
+```
 
 Exceptions
 -----------------
