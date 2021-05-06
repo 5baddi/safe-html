@@ -5,7 +5,7 @@
 [![Open issues](https://img.shields.io/github/issues-raw/baddiservices/safe-html)](https://github.com/baddiservices/safe-html/issues?q=is%3Aissue+is%3Aopen)
 [![Stars](https://img.shields.io/github/stars/baddiservices/safe-html)](https://github.com/baddiservices/safe-html/stargazers)
 [![Downloads](https://img.shields.io/packagist/dm/baddiservices/safehtml)](https://packagist.org/packages/baddiservices/safehtml)
-![Twitter Follow](https://img.shields.io/twitter/follow/5baddi?style=social)
+[![Twitter Follow](https://img.shields.io/twitter/follow/5baddi?style=social)](https://twitter.com/intent/follow?screen_name=5baddi)
 
 Safe HTML package help to prevent XSS vulnerability via HTML content.
 
