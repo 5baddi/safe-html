@@ -56,6 +56,20 @@ Prevent XSS from HTML
 $sanitizedHTML = $safeHTML->sanitizeHTML($content);
 ```
 
+Prevent XSS from text
+```php
+...
+
+$sanitizedText = $safeHTML->sanitize($text);
+```
+
+Prevent XSS from link
+```php
+...
+
+$sanitizedURL = $safeHTML->sanitizeURL($url);
+```
+
 Available methods
 -----------------
 
