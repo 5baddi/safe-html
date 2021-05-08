@@ -113,4 +113,4 @@ Contribute
 Contributions to the package are always welcome!
 
 * Report any bugs or issues you find.
-* Clone the code source and publish pull your request.
+* Clone the code source and  submit your pull request.
