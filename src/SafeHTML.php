@@ -176,25 +176,31 @@ class SafeHTML
         return $this->encodeEntities($safeHTML);
     }
 
-    private function loadBlackList(): void
+    public function loadBlackList(): void
     {
         try {
-            $blackList = json_decode(file_get_contents($this->blackListPath), true);
-            if (is_array($blackList) && sizeof($blackList) > 0) {
-                if (isset($blackList["tags"], $blackList["tags"]["not-allowed"]) && sizeof($blackList["tags"]["not-allowed"]) > 0) {
-                    $this->notAllowedTags = $blackList["tags"]["not-allowed"];
+            $blackListContent = $this->getDefaultBlackList();
+
+            $blackListFileContent = @file_get_contents($this->blackListPath);
+            if ($blackListFileContent !== false) {
+                $blackListContent = json_decode($blackListFileContent, true);
+            }
+
+            if (is_array($blackListContent) && sizeof($blackListContent) > 0) {
+                if (isset($blackListContent["tags"], $blackListContent["tags"]["not-allowed"]) && sizeof($blackListContent["tags"]["not-allowed"]) > 0) {
+                    $this->notAllowedTags = $blackListContent["tags"]["not-allowed"];
                 } else {
                     $this->notAllowedTags = self::NOT_ALLOWED_TAGS;
                 }
                 
-                if (isset($blackList["tags"], $blackList["tags"]["not-allowed-empty"]) && sizeof($blackList["tags"]["not-allowed-empty"]) > 0) {
-                    $this->notAllowedEmptyTags = $blackList["tags"]["not-allowed-empty"];
+                if (isset($blackListContent["tags"], $blackListContent["tags"]["not-allowed-empty"]) && sizeof($blackListContent["tags"]["not-allowed-empty"]) > 0) {
+                    $this->notAllowedEmptyTags = $blackListContent["tags"]["not-allowed-empty"];
                 } else {
                     $this->notAllowedEmptyTags = self::NOT_ALLOWED_EMPTY_TAGS;
                 }
                 
-                if (isset($blackList["attributes"], $blackList["attributes"]["not-allowed"]) && sizeof($blackList["attributes"]["not-allowed"]) > 0) {
-                    $this->notAllowedAttrs = $blackList["attributes"]["not-allowed"];
+                if (isset($blackListContent["attributes"], $blackListContent["attributes"]["not-allowed"]) && sizeof($blackListContent["attributes"]["not-allowed"]) > 0) {
+                    $this->notAllowedAttrs = $blackListContent["attributes"]["not-allowed"];
                 } else {
                     $this->notAllowedAttrs = self::NOT_ALLOWED_ATTRS;
                 }
@@ -202,6 +208,19 @@ class SafeHTML
         } catch(Throwable $exception) {
             throw new BlackListNotLoadedException($exception);
         }
+    }
+
+    public function getDefaultBlackList(): array
+    {
+        return [
+            'tags'                  => [
+                'not-allowed'       => [],
+                'not-allowed-empty' => []
+            ],
+            'attributes'            => [
+                'not-allowed'       => []
+            ]
+        ];
     }
 
     private function getURLRegex(): string
