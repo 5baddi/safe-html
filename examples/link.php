@@ -15,4 +15,4 @@ $url = "students.washington.edu/squakmix/reflect.php?param=<script>alert('xss!')
 $safeHTML = new SafeHTML();
 $sanitizedURL = $safeHTML->sanitizeURL($url);
 
-echo $sanitizedHTML;
+echo $sanitizedURL;
