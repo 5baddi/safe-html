@@ -133,7 +133,7 @@ class SafeHTML
     /**
      * @throws InvalidArgumentException
      */
-    public function sanitizeHTML(?string $value = null): ?string
+    public function sanitizeHTML(?string $value = null, bool $encodeEntities = false): ?string
     {
         try {
             if ($value === null) {
@@ -144,7 +144,7 @@ class SafeHTML
             $this->removeNullCharacter($value);
             $this->removeNetscapeJSEntities($value);
         
-            $doc = new DOMDocument("1.0", $this->encoding);
+            $doc = new DOMDocument('1.0', $this->encoding);
             libxml_use_internal_errors(false);
 
             $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
@@ -178,7 +178,7 @@ class SafeHTML
 
             $safeHTML = substr($safeHTML, 6, -7);
 
-            return $this->encodeEntities($safeHTML);
+            return $encodeEntities ? $this->encodeEntities($safeHTML) : $safeHTML;
         } catch (Exception $e) {
             throw new InvalidArgumentException('Invalid HTML', $e->getCode(), $e);
         }
