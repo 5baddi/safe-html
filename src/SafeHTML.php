@@ -137,7 +137,6 @@ class SafeHTML
     {
         try {
             $this->escapeURLs($value);
-            $this->removeSpacing($value);
             $this->removeNullCharacter($value);
             $this->removeNetscapeJSEntities($value);
         
@@ -146,7 +145,7 @@ class SafeHTML
 
             $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
 
-            if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS)) {
+            if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS | LIBXML_NOERROR | LIBXML_NOWARNING)) {
                 foreach ($doc->getElementsByTagName('*') as $tag) {
                     if (in_array(strtolower($tag->tagName), $this->notAllowedTags) || $tag->nodeType === XML_CDATA_SECTION_NODE || $tag->nodeType === XML_COMMENT_NODE) {
                         $tag->parentNode->removeChild($tag);
@@ -251,7 +250,7 @@ class SafeHTML
     
     private function removeSpacing(string &$value): string
     {
-        $value = preg_replace("(?:\s|\"|'|\+|&#x0[9A-F];|%0[9a-f])*?", '', $value);
+        $value = preg_replace("/(?:\s|\"|'|\+|&#x0[9A-F];|%0[9a-f])*?/", '', $value);
         if (is_null($value) || is_array($value)) {
             return '';
         }
@@ -261,7 +260,7 @@ class SafeHTML
     
     private function removeNullCharacter(string &$value): string
     {
-        $value = preg_replace(chr(0), '', $value);
+        $value = preg_replace('/\0/', '', $value);
         if (is_null($value) || is_array($value)) {
             return '';
         }
