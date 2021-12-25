@@ -11,6 +11,8 @@ namespace BADDIServices\SafeHTML;
 
 use BADDIServices\SafeHTML\Exceptions\BlackListNotLoadedException;
 use DOMDocument;
+use Exception;
+use InvalidArgumentException;
 use Throwable;
 
 class SafeHTML
@@ -128,48 +130,55 @@ class SafeHTML
         return $safeURls;
     }
 
+    /**
+     * @throws InvalidArgumentException
+     */
     public function sanitizeHTML(string $value): string
     {
-        $this->escapeURLs($value);
-        $this->removeSpacing($value);
-        $this->removeNullCharacter($value);
-        $this->removeNetscapeJSEntities($value);
-      
-        $doc = new DOMDocument("1.0", $this->encoding);
-        libxml_use_internal_errors(false);
+        try {
+            $this->escapeURLs($value);
+            $this->removeSpacing($value);
+            $this->removeNullCharacter($value);
+            $this->removeNetscapeJSEntities($value);
+        
+            $doc = new DOMDocument("1.0", $this->encoding);
+            libxml_use_internal_errors(false);
 
-        $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
+            $html = mb_convert_encoding("<html>${value}</html>", "HTML-ENTITIES", $this->encoding);
 
-        if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS)) {
-            foreach ($doc->getElementsByTagName('*') as $tag) {
-                if (in_array(strtolower($tag->tagName), $this->notAllowedTags) || $tag->nodeType === XML_CDATA_SECTION_NODE || $tag->nodeType === XML_COMMENT_NODE) {
-                    $tag->parentNode->removeChild($tag);
-
-                    continue;
-                }
-
-                foreach ($tag->attributes as $attr) {
-                    if (in_array(strtolower($attr->nodeName), $this->notAllowedAttrs) || $attr->nodeType === XML_ATTRIBUTE_CDATA) {
-                        $tag->removeAttribute($attr->nodeName);
+            if ($doc->loadHTML($html, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD | LIBXML_NOBLANKS)) {
+                foreach ($doc->getElementsByTagName('*') as $tag) {
+                    if (in_array(strtolower($tag->tagName), $this->notAllowedTags) || $tag->nodeType === XML_CDATA_SECTION_NODE || $tag->nodeType === XML_COMMENT_NODE) {
+                        $tag->parentNode->removeChild($tag);
 
                         continue;
                     }
-                }
 
-                if (in_array(strtolower($tag->tagName), $this->notAllowedEmptyTags) && $tag->attributes->count() === 0) {
-                    $tag->parentNode->removeChild($tag);
+                    foreach ($tag->attributes as $attr) {
+                        if (in_array(strtolower($attr->nodeName), $this->notAllowedAttrs) || $attr->nodeType === XML_ATTRIBUTE_CDATA) {
+                            $tag->removeAttribute($attr->nodeName);
+
+                            continue;
+                        }
+                    }
+
+                    if (in_array(strtolower($tag->tagName), $this->notAllowedEmptyTags) && $tag->attributes->count() === 0) {
+                        $tag->parentNode->removeChild($tag);
+                    }
                 }
             }
+
+            $safeHTML = $doc->saveHTML($doc->getElementsByTagName('html')->item(0));
+            if (! $safeHTML) {
+                return '';
+            }
+
+            $safeHTML = substr($safeHTML, 6, -7);
+
+            return $this->encodeEntities($safeHTML);
+        } catch (Exception $e) {
+            throw new InvalidArgumentException('Invalid HTML', $e->getCode(), $e);
         }
-
-        $safeHTML = $doc->saveHTML($doc->getElementsByTagName('html')->item(0));
-        if (! $safeHTML) {
-            return '';
-        }
-
-        $safeHTML = substr($safeHTML, 6, -7);
-
-        return $this->encodeEntities($safeHTML);
     }
 
     public function loadBlackList(): void
