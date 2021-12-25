@@ -133,9 +133,13 @@ class SafeHTML
     /**
      * @throws InvalidArgumentException
      */
-    public function sanitizeHTML(string $value): string
+    public function sanitizeHTML(?string $value = null): ?string
     {
         try {
+            if ($value === null) {
+                return null;
+            }
+
             $this->escapeURLs($value);
             $this->removeNullCharacter($value);
             $this->removeNetscapeJSEntities($value);
