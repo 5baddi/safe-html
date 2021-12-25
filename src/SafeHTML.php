@@ -230,13 +230,7 @@ class SafeHTML
 
     private function getURLRegex(): string
     {
-        return "((https?|http)://)?(www\.)?" // SCHEME
-                . '([a-z0-9+!*(),;?&=$_.-]+(:[a-z0-9+!*(),;?&=$_.-]+)?@)?' // User and Pass
-                . "([a-z0-9\-\.]*)\.(([a-z]{2,4})|([0-9]{1,3}\.([0-9]{1,3})\.([0-9]{1,3})))" // Host or IP
-                . "(:[0-9]{2,5})?" // Port
-                . '(/([a-z0-9+$_%-]\.?)+)*/?' // Path
-                . '(\?[a-z+&\$_.-][a-z0-9;:@&%=+/$_.-]*)?' // GET Query
-                . "(#[a-z_.-][a-z0-9+$%_.-]*)?"; // Anchor
+        return '/((https?|http):(\/\/)+)?([a-zA-Z0-9_-]+[\/]*[a-zA-Z0-9_-]+\.)+([a-zA-Z0-9]{2,9})([\?#%\/][a-zA-Z0-9_=#@&%\-\w]*)*/';
     }
 
     private function escapeURLs(string &$value): string
