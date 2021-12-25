@@ -130,10 +130,6 @@ class SafeHTML
 
     public function sanitizeHTML(string $value): string
     {
-        if (!$this->validate($value)) {
-            return '';
-        }
-
         $this->escapeURLs($value);
         $this->removeSpacing($value);
         $this->removeNullCharacter($value);
@@ -167,7 +163,7 @@ class SafeHTML
         }
 
         $safeHTML = $doc->saveHTML($doc->getElementsByTagName('html')->item(0));
-        if (!$safeHTML) {
+        if (! $safeHTML) {
             return '';
         }
 
